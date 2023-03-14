@@ -75,7 +75,7 @@ class ConcreteProduct2 implements Product {
 * its base interface. As long as the client keeps working with the creator via
 * the base interface, you can pass it any creator's subclass.
 */
-function clientCode(creator: Creator) {
+function clientFMCode(creator: Creator) {
   // ...
   console.log('Client: I\'m not aware of the creator\'s class, but it still works.');
   console.log(creator.someOperation());
@@ -87,8 +87,8 @@ function clientCode(creator: Creator) {
 * environment.
 */
 console.log('App: Launched with the ConcreteCreator1.');
-clientCode(new ConcreteCreator1());
+clientFMCode(new ConcreteCreator1());
 console.log('');
 
 console.log('App: Launched with the ConcreteCreator2.');
-clientCode(new ConcreteCreator2());
+clientFMCode(new ConcreteCreator2());
