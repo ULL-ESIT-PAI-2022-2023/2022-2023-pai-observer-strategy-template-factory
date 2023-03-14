@@ -1,85 +1,92 @@
 /**
+ * Universidad de La Laguna
+ * Escuela Superior de Ingeniería y Tecnología
+ * Grado en Ingeniería Informática
+ * Programación de Aplicaciones Interactivas
+ *
+ * @author Thomas Edward Bradley, Daniel Mendéz Rodríguez
+ * @since Mar 20 2023
+ * @desc Example code following the Template Method dessign pattern 
+ */
+
+/**
  * The Abstract Class defines a template method that contains a skeleton of some
  * algorithm, composed of calls to (usually) abstract primitive operations.
- *
- * Concrete subclasses should implement these operations, but leave the template
- * method itself intact.
  */
-abstract class AbstractClass {
+abstract class GameAI {
   /**
-   * The template method defines the skeleton of an algorithm.
+   * The template method defines the skeleton of an algorithm, subclasses must 
+   * leave this intact
    */
   public templateMethod(): void {
-      this.baseOperation1();
-      this.requiredOperations1();
-      this.baseOperation2();
-      this.hook1();
-      this.requiredOperation2();
-      this.baseOperation3();
-      this.hook2();
+    // Implemented in the Abstract class
+    this.heal();
+    this.runAway();
+    this.pickUpItem();
+
+    // Implemented by all subclasses
+    this.raiseAlarm();
+    this.talkToPlayer();
+
+    // Optionally implemented by subclasses
+    this.attackPlayer();
+    this.askPlayerForHelp();
   }
+
+  /** These operations already have implementations */
+  protected heal(): void {
+    console.log('I need to heal');
+  }
+
+  protected runAway(): void {
+    console.log('I am running away');
+  }
+
+  protected pickUpItem(): void {
+    console.log('I am going to pick up an item');
+  }
+
+  /** These operations have to be implemented in subclasses */
+  protected abstract raiseAlarm(): void;
+
+  protected abstract talkToPlayer(): void;
 
   /**
-   * These operations already have implementations.
+   * These are hooks, they can be overriden (if not they already have an empty
+   * implementation in the abstract class)
    */
-  protected baseOperation1(): void {
-      console.log('AbstractClass says: I am doing the bulk of the work');
-  }
+  protected attackPlayer(): void { }
 
-  protected baseOperation2(): void {
-      console.log('AbstractClass says: But I let subclasses override some operations');
-  }
-
-  protected baseOperation3(): void {
-      console.log('AbstractClass says: But I am doing the bulk of the work anyway');
-  }
-
-  /**
-   * These operations have to be implemented in subclasses.
-   */
-  protected abstract requiredOperations1(): void;
-
-  protected abstract requiredOperation2(): void;
-
-  /**
-   * These are "hooks." Subclasses may override them, but it's not mandatory
-   * since the hooks already have default (but empty) implementation. Hooks
-   * provide additional extension points in some crucial places of the
-   * algorithm.
-   */
-  protected hook1(): void { }
-
-  protected hook2(): void { }
+  protected askPlayerForHelp(): void { }
 }
 
 /**
 * Concrete classes have to implement all abstract operations of the base class.
-* They can also override some operations with a default implementation.
+* They can also override hooks with a default implementation.
 */
-class ConcreteClass1 extends AbstractClass {
-  protected requiredOperations1(): void {
-      console.log('ConcreteClass1 says: Implemented Operation1');
+class FriendlyAI extends GameAI {
+  protected raiseAlarm(): void {
+    console.log('Sound the alarm, call the player');
   }
 
-  protected requiredOperation2(): void {
-      console.log('ConcreteClass1 says: Implemented Operation2');
+  protected talkToPlayer(): void {
+    console.log('Thank goodness you were there to save us');
+  }
+  protected askPlayerForHelp(): void {
+    console.log('I left a prized family heirloom at my old house, could you help me retrieve it?');
   }
 }
 
-/**
-* Usually, concrete classes override only a fraction of base class' operations.
-*/
-class ConcreteClass2 extends AbstractClass {
-  protected requiredOperations1(): void {
-      console.log('ConcreteClass2 says: Implemented Operation1');
+class EnemyAI extends GameAI {
+  protected raiseAlarm(): void {
+    console.log('Sound the alarm, the player is attacking!');
   }
 
-  protected requiredOperation2(): void {
-      console.log('ConcreteClass2 says: Implemented Operation2');
+  protected talkToPlayer(): void {
+    console.log('You will never defeat me!');
   }
-
-  protected hook1(): void {
-      console.log('ConcreteClass2 says: Overridden Hook1');
+  protected attackPlayer(): void {
+    console.log('There he is, attack!');
   }
 }
 
@@ -88,15 +95,17 @@ class ConcreteClass2 extends AbstractClass {
 * code does not have to know the concrete class of an object it works with, as
 * long as it works with objects through the interface of their base class.
 */
-function clientCode(abstractClass: AbstractClass) {
-  // ...
-  abstractClass.templateMethod();
-  // ...
+function clientCode(nonPlayableCharacter: GameAI) {
+  nonPlayableCharacter.templateMethod();
 }
 
-console.log('Same client code can work with different subclasses:');
-clientCode(new ConcreteClass1());
-console.log('');
+function main() {
+  console.log('Possible actions for a friendly AI:');
+  clientCode(new FriendlyAI());
+  console.log('');
 
-console.log('Same client code can work with different subclasses:');
-clientCode(new ConcreteClass2());
+  console.log('Possible actions for an enemy AI:');
+  clientCode(new EnemyAI());
+}
+
+main();
