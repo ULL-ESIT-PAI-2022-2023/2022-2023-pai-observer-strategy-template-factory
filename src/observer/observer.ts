@@ -1,126 +1,142 @@
 /**
- * The Subject interface declares a set of methods for managing subscribers.
+ * Universidad de La Laguna
+ * Escuela Superior de Ingeniería y Tecnología
+ * Grado en Ingeniería Informática
+ * Programación de Aplicaciones Interactivas
+ *
+ * @author Thomas Edward Bradley, Daniel Mendéz Rodríguez
+ * @since Mar 20 2023
+ * @desc Example code following the Observer dessign pattern 
  */
-interface Subject {
-  // Attach an observer to the subject.
-  attach(observer: Observer): void;
 
-  // Detach an observer from the subject.
-  detach(observer: Observer): void;
+/** @desc The Subject interface declares a set of methods for managing subscribers */
+interface StoreAlerts {
+  // Attach a customer to the subscriber list for recieving alerts
+  subscribe(observer: Customer): void;
 
-  // Notify all observers about an event.
-  notify(): void;
+  // Detach a customer from the subscriber list
+  unsubscribe(observer: Customer): void;
+
+  // Notify all customers about a new product
+  notifyNewProduct(): void;
 }
 
-/**
-* The Subject owns some important state and notifies observers when the state
-* changes.
-*/
-class ConcreteSubject implements Subject {
-  /**
-   * @type {number} For the sake of simplicity, the Subject's state, essential
-   * to all subscribers, is stored in this variable.
-   */
-  public state: number = 0;
+/** @class The Store owns an important state (latestProductCost) and notifies customers when it changes */
+class Store implements StoreAlerts {
+  /** @type {number} The Subject's state, essential to all subscribers */
+  public latestProductCost: number = 0;
+
+  /** @type {customer[]} List of subscribers */
+  private subscribedCustomers: Customer[] = [];
 
   /**
-   * @type {Observer[]} List of subscribers. In real life, the list of
-   * subscribers can be stored more comprehensively (categorized by event
-   * type, etc.).
+   * @desc Manages adding new customers to our subscriber list
+   * @param {Customer} customer Customer object we want to attach to subsciber list
+   * @returns {void}
    */
-  private observers: Observer[] = [];
-
-  /**
-   * The subscription management methods.
-   */
-  public attach(observer: Observer): void {
-      const isExist = this.observers.includes(observer);
-      if (isExist) {
-          return console.log('Subject: Observer has been attached already.');
-      }
-
-      console.log('Subject: Attached an observer.');
-      this.observers.push(observer);
-  }
-
-  public detach(observer: Observer): void {
-      const observerIndex = this.observers.indexOf(observer);
-      if (observerIndex === -1) {
-          return console.log('Subject: Nonexistent observer.');
-      }
-
-      this.observers.splice(observerIndex, 1);
-      console.log('Subject: Detached an observer.');
+  public subscribe(customer: Customer): void {
+    if(this.subscribedCustomers.includes(customer)) {
+      return console.log('Store: Customer is already on the subscriber list.');
+    }
+    console.log('Store: Customer succesfully added to subscriber list.');
+    this.subscribedCustomers.push(customer);
   }
 
   /**
-   * Trigger an update in each subscriber.
+   * @desc Manages removing customers from our subscriber list
+   * @param {Customer} customer Customer object we want to detach from subscriber list
+   * @returns {void}
    */
-  public notify(): void {
-      console.log('Subject: Notifying observers...');
-      for (const observer of this.observers) {
-          observer.update(this);
-      }
+  public unsubscribe(customer: Customer): void {
+    const observerIndex = this.subscribedCustomers.indexOf(customer);
+    if (observerIndex === -1) {
+      return console.log('Store: Customer is not a part of the subscriber list.');
+    }
+    this.subscribedCustomers.splice(observerIndex, 1);
+    console.log('Store: removed customer from subscriber list.');
+  }
+
+  /** @desc Trigger an update in each subscriber */
+  public notifyNewProduct(): void {
+    console.log('Store: Notifying subscribed customers...');
+    for (const observer of this.subscribedCustomers) {
+      observer.update(this);
+    }
   }
 
   /**
-   * Usually, the subscription logic is only a fraction of what a Subject can
-   * really do. Subjects commonly hold some important business logic, that
-   * triggers a notification method whenever something important is about to
-   * happen (or after it).
+   * @desc Method that calculates the price of the latest product and notifies all
+   *       subscibed customers of it
+   * @returns {void}
    */
-  public someBusinessLogic(): void {
-      console.log('\nSubject: I\'m doing something important.');
-      this.state = Math.floor(Math.random() * (10 + 1));
+  public addNewProduct(): void {
+    console.log('\nNew product delivery incoming');
+    this.latestProductCost = Math.floor(Math.random() * (100 + 1));
 
-      console.log(`Subject: My state has just changed to: ${this.state}`);
-      this.notify();
+    console.log(`Store: NEW PRODUCT AVAILABLE, cost of new product is ${this.latestProductCost}`);
+    this.notifyNewProduct();
   }
 }
 
-/**
-* The Observer interface declares the update method, used by subjects.
-*/
-interface Observer {
+/** @desc The Customer interface declares the update method, used by concrete customer classes */
+interface Customer {
   // Receive update from subject.
-  update(subject: Subject): void;
+  update(subject: StoreAlerts): void;
 }
 
-/**
-* Concrete Observers react to the updates issued by the Subject they had been
-* attached to.
-*/
-class ConcreteObserverA implements Observer {
-  public update(subject: Subject): void {
-      if (subject instanceof ConcreteSubject && subject.state < 3) {
-          console.log('ConcreteObserverA: Reacted to the event.');
+/** @class Businessman will react to updates issued by Customer */
+class Businessman implements Customer {
+  /**
+   * @desc Businessman has a lot of money, they will decide wether to buy a product or
+   *       not to bother based on it's price
+   * @param {StoreAlerts} alerts Interface through which we acess the new important state of Store 
+   * @returns {void}
+   */
+  public update(alerts: StoreAlerts): void {
+    if (alerts instanceof Store) {
+      if (alerts.latestProductCost <= 20) {
+        console.log(`The businessman didn't bother buying the new ${alerts.latestProductCost}€ product`);
+      } else {
+        console.log(`The businessman bought the new ${alerts.latestProductCost}€ product`)
       }
+    }
   }
 }
 
-class ConcreteObserverB implements Observer {
-  public update(subject: Subject): void {
-      if (subject instanceof ConcreteSubject && (subject.state === 0 || subject.state >= 2)) {
-          console.log('ConcreteObserverB: Reacted to the event.');
+/** @class Student will react to updates issued by Customer */
+class Student implements Customer {
+  /**
+   * @desc Student doesn't have lot of money, they will see wether they can afford a product or not
+   * @param {StoreAlerts} alerts Interface through which we acess the new important state of Store 
+   * @returns {void}
+   */
+  public update(alerts: StoreAlerts): void {
+    if (alerts instanceof Store) {
+      if (alerts.latestProductCost <= 40) {
+        console.log(`The student bought the new ${alerts.latestProductCost}€ product`);
+      } else {
+        console.log(`The student wasn't able to afford the new ${alerts.latestProductCost}€ product`)
       }
+    }
   }
 }
 
-/**
-* The client code.
-*/
+/** @desc The client code */
+function mainObserver(): void {
+  const store = new Store();
 
-const subject = new ConcreteSubject();
+  const customer1 = new Businessman();
+  store.subscribe(customer1);
 
-const observer1 = new ConcreteObserverA();
-subject.attach(observer1);
+  const customer2 = new Student();
+  store.subscribe(customer2);
 
-const observer2 = new ConcreteObserverB();
-subject.attach(observer2);
+  store.addNewProduct();
+  store.addNewProduct();
 
-subject.someBusinessLogic();
-subject.someBusinessLogic();
+  store.unsubscribe(customer2);
 
-subject.detach(observer2);
+  store.addNewProduct();
+}
 
-subject.someBusinessLogic();
+mainObserver();
