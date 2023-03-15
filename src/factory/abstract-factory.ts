@@ -1,146 +1,115 @@
 /**
- * The Abstract Factory interface declares a set of methods that return
- * different abstract products. These products are called a family and are
- * related by a high-level theme or concept. Products of one family are usually
- * able to collaborate among themselves. A family of products may have several
- * variants, but the products of one variant are incompatible with products of
- * another.
+ * Universidad de La Laguna
+ * Escuela Superior de Ingeniería y Tecnología
+ * Grado en Ingeniería Informática
+ * Programación de Aplicaciones Interactivas
+ *
+ * @author Thomas Edward Bradley, Daniel Mendéz Rodríguez
+ * @since Mar 20 2023
+ * @desc Example code following the Abstract Factory dessign pattern 
  */
-interface AbstractFactory {
-  createProductA(): AbstractProductA;
 
-  createProductB(): AbstractProductB;
+/** @desc Chair interface declares what a chair should do, independently of the style */
+interface Chair {
+  sitOn(): void;
+}
+
+/** @desc CoffeTable interface does the same as Chair interface, both are concrete products interfaces */
+interface CoffeeTable {
+  putCupOn(): void;
 }
 
 /**
-* Concrete Factories produce a family of products that belong to a single
-* variant. The factory guarantees that resulting products are compatible. Note
-* that signatures of the Concrete Factory's methods return an abstract product,
-* while inside the method a concrete product is instantiated.
-*/
-class ConcreteFactory1 implements AbstractFactory {
-  public createProductA(): AbstractProductA {
-      return new ConcreteProductA1();
-  }
-
-  public createProductB(): AbstractProductB {
-      return new ConcreteProductB1();
-  }
-}
-
-/**
-* Each Concrete Factory has a corresponding product variant.
-*/
-class ConcreteFactory2 implements AbstractFactory {
-  public createProductA(): AbstractProductA {
-      return new ConcreteProductA2();
-  }
-
-  public createProductB(): AbstractProductB {
-      return new ConcreteProductB2();
+ * @desc Represents a chair belonging to the Victorian style, will be created by the Victorian factory
+ * @implements Chair
+ */
+class VictorianChair implements Chair {
+  /** @desc Allows a person to sit on the chair */
+  public sitOn(): void {
+    console.log('Sitting on a Victorian chair');
   }
 }
 
 /**
-* Each distinct product of a product family should have a base interface. All
-* variants of the product must implement this interface.
-*/
-interface AbstractProductA {
-  usefulFunctionA(): string;
-}
-
-/**
-* These Concrete Products are created by corresponding Concrete Factories.
-*/
-class ConcreteProductA1 implements AbstractProductA {
-  public usefulFunctionA(): string {
-      return 'The result of the product A1.';
-  }
-}
-
-class ConcreteProductA2 implements AbstractProductA {
-  public usefulFunctionA(): string {
-      return 'The result of the product A2.';
+ * @desc Represents a Victorian coffee table
+ * @implements CoffeeTable
+ */
+class VictorianCoffeeTable implements CoffeeTable {
+  /** @desc Puts a cup of coffee on the coffee table */
+  public putCupOn(): void {
+    console.log('Putting a cup of coffee on a Victorian coffee table');
   }
 }
 
 /**
-* Here's the the base interface of another product. All products can interact
-* with each other, but proper interaction is possible only between products of
-* the same concrete variant.
-*/
-interface AbstractProductB {
-  /**
-   * Product B is able to do its own thing...
-   */
-  usefulFunctionB(): string;
-
-  /**
-   * ...but it also can collaborate with the ProductA.
-   *
-   * The Abstract Factory makes sure that all products it creates are of the
-   * same variant and thus, compatible.
-   */
-  anotherUsefulFunctionB(collaborator: AbstractProductA): string;
-}
-
-/**
-* These Concrete Products are created by corresponding Concrete Factories.
-*/
-class ConcreteProductB1 implements AbstractProductB {
-
-  public usefulFunctionB(): string {
-      return 'The result of the product B1.';
-  }
-
-  /**
-   * The variant, Product B1, is only able to work correctly with the variant,
-   * Product A1. Nevertheless, it accepts any instance of AbstractProductA as
-   * an argument.
-   */
-  public anotherUsefulFunctionB(collaborator: AbstractProductA): string {
-      const result = collaborator.usefulFunctionA();
-      return `The result of the B1 collaborating with the (${result})`;
-  }
-}
-
-class ConcreteProductB2 implements AbstractProductB {
-
-  public usefulFunctionB(): string {
-      return 'The result of the product B2.';
-  }
-
-  /**
-   * The variant, Product B2, is only able to work correctly with the variant,
-   * Product A2. Nevertheless, it accepts any instance of AbstractProductA as
-   * an argument.
-   */
-  public anotherUsefulFunctionB(collaborator: AbstractProductA): string {
-      const result = collaborator.usefulFunctionA();
-      return `The result of the B2 collaborating with the (${result})`;
+ * @desc Represents a chair belonging to the Modern style, will be created by the Modern factory
+ * @implements Chair
+ */
+class ModernChair implements Chair {
+  /** @desc Allows a person to sit on the chair */
+  public sitOn(): void {
+    console.log('Sitting on a Modern chair');
   }
 }
 
 /**
-* The client code works with factories and products only through abstract
-* types: AbstractFactory and AbstractProduct. This lets you pass any factory or
-* product subclass to the client code without breaking it.
-*/
-function clientAFCode(factory: AbstractFactory) {
-  const productA = factory.createProductA();
-  const productB = factory.createProductB();
+ * @desc Represents a Modern coffee table
+ * @implements CoffeeTable
+ */
+class ModernCoffeeTable implements CoffeeTable {
+  /** @desc Puts a cup of coffee on the coffee table */
+  public putCupOn(): void {
+    console.log('Putting a cup of coffee on a Modern coffee table');
+  }
+}
 
-  console.log(productB.usefulFunctionB());
-  console.log(productB.anotherUsefulFunctionB(productA));
+/** @desc The Abstract factory, implements methods that creates abstract products */
+interface FurnitureFactory {
+  createChair(): Chair;
+  createCoffeeTable(): CoffeeTable;
+}
+
+/** @desc Factory in charge of creating furniture of Victorian style */
+class VictorianFurnitureFactory implements FurnitureFactory {
+  /** @desc Creates a new Victorian style chair */
+  public createChair(): Chair {
+    return new VictorianChair();
+  }
+
+  /** @desc Creates a new Victorian style coffee table */
+  public createCoffeeTable(): CoffeeTable {
+    return new VictorianCoffeeTable();
+  }
+}
+
+/** @desc Factory in charge of creating furniture of Modern style */
+class ModernFurnitureFactory implements FurnitureFactory {
+  /** @desc Creates a new Modern style chair */
+  public createChair(): Chair {
+    return new ModernChair();
+  }
+
+  /** @desc Creates a new Modern style coffee table */
+  public createCoffeeTable(): CoffeeTable {
+    return new ModernCoffeeTable();
+  }
+}
+
+/** @desc Requests a chair and a coffee table from a factory, it does not mind which factory the products come from */
+function clientFurnitureCode(factory: FurnitureFactory): void {
+  const chair: Chair = factory.createChair();
+  const coffeeTable: CoffeeTable = factory.createCoffeeTable();
+
+  chair.sitOn();
+  coffeeTable.putCupOn();
 }
 
 /**
 * The client code can work with any concrete factory class.
 */
-console.log('Client: Testing client code with the first factory type...');
-clientAFCode(new ConcreteFactory1());
-
+console.log('Client A: I like Victorian furniture');
+clientFurnitureCode(new VictorianFurnitureFactory());
 console.log('');
 
-console.log('Client: Testing the same client code with the second factory type...');
-clientAFCode(new ConcreteFactory2());
+console.log('Client B: I like Modern furniture rather than Victorian');
+clientFurnitureCode(new ModernFurnitureFactory());
