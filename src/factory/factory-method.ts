@@ -1,94 +1,110 @@
 /**
- * The Creator class declares the factory method that is supposed to return an
- * object of a Product class. The Creator's subclasses usually provide the
- * implementation of this method.
+ * Universidad de La Laguna
+ * Escuela Superior de Ingeniería y Tecnología
+ * Grado en Ingeniería Informática
+ * Programación de Aplicaciones Interactivas
+ *
+ * @author Thomas Edward Bradley, Daniel Mendéz Rodríguez
+ * @since Mar 20 2023
+ * @desc Example code following the Factory Method dessign pattern 
  */
-abstract class Creator {
-  /**
-   * Note that the Creator may also provide some default implementation of the
-   * factory method.
-   */
-  public abstract factoryMethod(): Product;
+
+/** 
+ * @class Creator class, declares factory method that is supposed to return an
+ *        object of a Product class (usually implemented by it's subclasses)
+ */
+abstract class Client {
+  /** @type {number} Standard ticket price */
+  private ticketPrice: number = 10;
+  
+  /** @desc Creator can provide a default implementation if it chooses */
+  public abstract factoryMethod(): Discount;
 
   /**
-   * Also note that, despite its name, the Creator's primary responsibility is
-   * not creating products. Usually, it contains some core business logic that
-   * relies on Product objects, returned by the factory method. Subclasses can
-   * indirectly change that business logic by overriding the factory method
-   * and returning a different type of product from it.
+   * @desc Despite it's name, the Creator usually contains some business logic
+   *       that relies on Product objects returned by the factory method
    */
-  public someOperation(): string {
-      // Call the factory method to create a Product object.
-      const product = this.factoryMethod();
-      // Now, use the product.
-      return `Creator: The same creator's code has just worked with ${product.operation()}`;
+  public applyDiscount(): void {
+    console.log(`Standard ticket price is ${this.ticketPrice}€.`);
+    // Call the factory method to create a Product object.
+    const product = this.factoryMethod();
+    // Now, use the product.
+    this.ticketPrice *= product.retrieveDiscount();
+    console.log(`Discounted price for client is ${this.ticketPrice}€.`);
   }
 }
 
-/**
-* Concrete Creators override the factory method in order to change the
-* resulting product's type.
-*/
-class ConcreteCreator1 extends Creator {
+/** @class Overrides the factory method to change the resulting product's type */
+class Child extends Client {
+  /** 
+   * @desc Still uses the abstract product type so the Creator can stay independent 
+   * @returns {Discount} Will return a concrete product
+   */
+  public factoryMethod(): Discount {
+    return new ChildDiscount();
+  }
+}
+
+/** @class Overrides the factory method to change the resulting product's type */
+class Adult extends Client {
+  /** 
+   * @desc Still uses the abstract product type so the Creator can stay independent 
+   * @returns {Discount} Will return a concrete product
+   */
+  public factoryMethod(): Discount {
+    return new NoDiscount();
+  }
+}
+
+/** @desc Product interface declares the operations that all concrete products must implement */
+interface Discount {
+  retrieveDiscount(): number;
+}
+
+/** @class Concrete Products provide various implementations of the Product interface */
+class ChildDiscount implements Discount {
   /**
-   * Note that the signature of the method still uses the abstract product
-   * type, even though the concrete product is actually returned from the
-   * method. This way the Creator can stay independent of concrete product
-   * classes.
+   * @desc Returns the discount the cinema applies to child tickets
+   * @returns {number} Discount that will be applied
    */
-  public factoryMethod(): Product {
-      return new ConcreteProduct1();
+  public retrieveDiscount(): number {
+    const DISCOUNT: number = 0.5;
+    console.log(`This child will recieve a ${100 - DISCOUNT * 100}% discount.`);
+    return DISCOUNT;
   }
 }
 
-class ConcreteCreator2 extends Creator {
-  public factoryMethod(): Product {
-      return new ConcreteProduct2();
-  }
-}
-
-/**
-* The Product interface declares the operations that all concrete products must
-* implement.
-*/
-interface Product {
-  operation(): string;
-}
-
-/**
-* Concrete Products provide various implementations of the Product interface.
-*/
-class ConcreteProduct1 implements Product {
-  public operation(): string {
-      return '{Result of the ConcreteProduct1}';
-  }
-}
-
-class ConcreteProduct2 implements Product {
-  public operation(): string {
-      return '{Result of the ConcreteProduct2}';
+/** @class Concrete Products provide various implementations of the Product interface */
+class NoDiscount implements Discount {
+  /**
+   * @desc Returns the discount the cinema applies to adult tickets
+   * @returns {number} Discount that will be applied
+   */
+  public retrieveDiscount(): number {
+    const DISCOUNT: number = 1;
+    console.log(`This adult will recieve a ${100 - DISCOUNT * 100}% discount.`);
+    return DISCOUNT;
   }
 }
 
 /**
-* The client code works with an instance of a concrete creator, albeit through
-* its base interface. As long as the client keeps working with the creator via
-* the base interface, you can pass it any creator's subclass.
-*/
-function clientFMCode(creator: Creator) {
-  // ...
-  console.log('Client: I\'m not aware of the creator\'s class, but it still works.');
-  console.log(creator.someOperation());
-  // ...
+ * @desc The client code works through the Creator class' interface so that
+ *       it can deal with any of it's concrete instances
+ * @param {Client} client 
+ */
+function cinema(client: Client): void {
+  console.log('Cinema: A new client has arrived to watch a film.');
+  client.applyDiscount();
 }
 
-/**
-* The Application picks a creator's type depending on the configuration or
-* environment.
-*/
-console.log('App: Launched with the ConcreteCreator1.');
-clientFMCode(new ConcreteCreator1());
-console.log('');
+/** @desc Application that sets the Creator's type */
+function mainFactory(): void {
+  console.log('A child is going to the cinema to watch a film.');
+  cinema(new Child());
+  console.log('');
 
-console.log('App: Launched with the ConcreteCreator2.');
-clientFMCode(new ConcreteCreator2());
+  console.log('An adult is going to the cinema to watch a film.');
+  cinema(new Adult());
+}
+
+mainFactory();

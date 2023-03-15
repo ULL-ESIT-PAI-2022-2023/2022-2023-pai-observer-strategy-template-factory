@@ -26,7 +26,7 @@ class Store implements StoreAlerts {
   /** @type {number} The Subject's state, essential to all subscribers */
   public latestProductCost: number = 0;
 
-  /** @type {customer[]} List of subscribers */
+  /** @type {Customer[]} List of subscribers */
   private subscribedCustomers: Customer[] = [];
 
   /**
