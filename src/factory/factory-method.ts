@@ -17,8 +17,8 @@ abstract class Client {
   /** @type {number} Standard ticket price */
   private ticketPrice: number = 10;
   
-  /** @desc Creator can provide a default implementation if it chooses */
-  public abstract factoryMethod(): Discount;
+  /** @desc Factory method, Creator can provide a default implementation if it chooses */
+  public abstract createDiscount(): Discount;
 
   /**
    * @desc Despite it's name, the Creator usually contains some business logic
@@ -27,7 +27,7 @@ abstract class Client {
   public applyDiscount(): void {
     console.log(`Standard ticket price is ${this.ticketPrice}€.`);
     // Call the factory method to create a Product object.
-    const product = this.factoryMethod();
+    const product = this.createDiscount();
     // Now, use the product.
     this.ticketPrice *= product.retrieveDiscount();
     console.log(`Discounted price for client is ${this.ticketPrice}€.`);
@@ -40,7 +40,7 @@ class Child extends Client {
    * @desc Still uses the abstract product type so the Creator can stay independent 
    * @returns {Discount} Will return a concrete product
    */
-  public factoryMethod(): Discount {
+  public createDiscount(): Discount {
     return new ChildDiscount();
   }
 }
@@ -51,7 +51,7 @@ class Adult extends Client {
    * @desc Still uses the abstract product type so the Creator can stay independent 
    * @returns {Discount} Will return a concrete product
    */
-  public factoryMethod(): Discount {
+  public createDiscount(): Discount {
     return new NoDiscount();
   }
 }
@@ -82,7 +82,7 @@ class NoDiscount implements Discount {
    */
   public retrieveDiscount(): number {
     const DISCOUNT: number = 1;
-    console.log(`This adult will recieve a ${100 - DISCOUNT * 100}% discount.`);
+    console.log(`This person will recieve a ${100 - DISCOUNT * 100}% discount.`);
     return DISCOUNT;
   }
 }

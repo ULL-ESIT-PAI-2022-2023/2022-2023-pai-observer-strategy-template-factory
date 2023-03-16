@@ -12,10 +12,10 @@
 /** @desc The Subject interface declares a set of methods for managing subscribers */
 interface StoreAlerts {
   // Attach a customer to the subscriber list for recieving alerts
-  subscribe(observer: Customer): void;
+  subscribe(customer: Customer): void;
 
   // Detach a customer from the subscriber list
-  unsubscribe(observer: Customer): void;
+  unsubscribe(customer: Customer): void;
 
   // Notify all customers about a new product
   notifyNewProduct(): void;
@@ -81,7 +81,7 @@ class Store implements StoreAlerts {
 /** @desc The Customer interface declares the update method, used by concrete customer classes */
 interface Customer {
   // Receive update from subject.
-  update(subject: StoreAlerts): void;
+  update(alerts: StoreAlerts): void;
 }
 
 /** @class Businessman will react to updates issued by Customer */
