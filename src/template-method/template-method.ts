@@ -33,17 +33,17 @@ abstract class GameAI {
   /** These operations already have implementations */
   /** @desc Prints dialogue for when the AI is healing */
   protected heal(): void {
-    console.log('I need to heal');
+    console.log('HEAL: "I need to heal"');
   }
 
   /** @desc Prints dialogue for when the AI is runnign away */
   protected runAway(): void {
-    console.log('I am running away');
+    console.log('RUN: "I am running away"');
   }
 
   /** @desc Prints dialogue for when the AI is picking up an item */
   protected pickUpItem(): void {
-    console.log('I am going to pick up an item');
+    console.log('PICK UP ITEM: "I am going to pick up an item"');
   }
 
   /** These operations have to be implemented in subclasses */
@@ -72,17 +72,17 @@ abstract class GameAI {
 class FriendlyAI extends GameAI {
   /** @desc Prints dialogue for when the AI is trying to raise an alarm, subclass is forced to implement */
   protected raiseAlarm(): void {
-    console.log('Sound the alarm, call the player');
+    console.log('RAISE ALARM: "Sound the alarm, call the player"');
   }
 
   /** @desc Prints dialogue for when the AI is talking to the player, subclass is forced to implement */
   protected talkToPlayer(): void {
-    console.log('Thank goodness you were there to save us');
+    console.log('TALK TO PLAYER: "Thank goodness you were there to save us"');
   }
 
   /** @desc Prints dialogue for when the AI is asking for help, subclass choses to implement this */
   protected askPlayerForHelp(): void {
-    console.log('I left a prized family heirloom at my old house, could you help me retrieve it?');
+    console.log('ASK FOR HELP: "I left a prized family heirloom at my old house, could you help me retrieve it?"');
   }
 }
 
@@ -90,17 +90,17 @@ class FriendlyAI extends GameAI {
 class EnemyAI extends GameAI {
   /** @desc Prints dialogue for when the AI is trying to raise an alarm, subclass is forced to implement */
   protected raiseAlarm(): void {
-    console.log('Sound the alarm, the player is attacking!');
+    console.log('RAISE ALARM: "Sound the alarm, the player is attacking!"');
   }
 
   /** @desc Prints dialogue for when the AI is talking to the player, subclass is forced to implement */
   protected talkToPlayer(): void {
-    console.log('You will never defeat me!');
+    console.log('TALK TO PLAYER: "You will never defeat me!"');
   }
 
   /** @desc Prints dialogue for when the AI is attacking the player, subclass choses to implement this */
   protected attackPlayer(): void {
-    console.log('There he is, attack!');
+    console.log('ATTACK PLAYER: "There he is, attack!"');
   }
 }
 
