@@ -15,7 +15,7 @@
  */
 abstract class GameAI {
   /** @desc The template method, subclasses must leave this intact */
-  public templateMethod(): void {
+  public printDialogue(): void {
     // Implemented in the Abstract class
     this.heal();
     this.runAway();
@@ -109,7 +109,7 @@ class EnemyAI extends GameAI {
  * @param {GameAI} nonPlayableCharacter Concrete class we're going to call the template method for
  */
 function clientCode(nonPlayableCharacter: GameAI): void {
-  nonPlayableCharacter.templateMethod();
+  nonPlayableCharacter.printDialogue();
 }
 
 function main() {
