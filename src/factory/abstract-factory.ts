@@ -6,7 +6,7 @@
  *
  * @author Thomas Edward Bradley, Daniel Mendéz Rodríguez
  * @since Mar 20 2023
- * @desc Example code following the Abstract Factory dessign pattern 
+ * @desc Example code of a furniture shop following the Abstract Factory dessign pattern 
  */
 
 /** @desc Chair interface declares what a chair should do, independently of the style */
@@ -107,9 +107,13 @@ function clientFurnitureCode(factory: FurnitureFactory): void {
 /**
 * The client code can work with any concrete factory class.
 */
-console.log('Client A: I like Victorian furniture');
-clientFurnitureCode(new VictorianFurnitureFactory());
-console.log('');
+function clientFurnitureRequest() {
+  console.log('Client A: I like Victorian furniture');
+  clientFurnitureCode(new VictorianFurnitureFactory());
+  console.log('');
 
-console.log('Client B: I like Modern furniture rather than Victorian');
-clientFurnitureCode(new ModernFurnitureFactory());
+  console.log('Client B: I like Modern furniture rather than Victorian');
+  clientFurnitureCode(new ModernFurnitureFactory());
+}
+
+clientFurnitureRequest();

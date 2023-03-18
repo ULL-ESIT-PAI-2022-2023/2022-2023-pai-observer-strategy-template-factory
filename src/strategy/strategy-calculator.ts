@@ -1,3 +1,13 @@
+/**
+ * Universidad de La Laguna
+ * Escuela Superior de Ingeniería y Tecnología
+ * Grado en Ingeniería Informática
+ * Programación de Aplicaciones Interactivas
+ *
+ * @author Thomas Edward Bradley, Daniel Mendéz Rodríguez
+ * @since Mar 20 2023
+ * @desc Example code of a simple calculator following Strategy dessign pattern 
+ */
 
 /** @desc Defines what each strategy of the calculator should have */
 interface CalculatorStrategy {
@@ -46,15 +56,19 @@ class CalculatorContext {
 /**
  * Client code can work with any strategy
  */
-console.log('Welcome to the calculator');
-console.log('===========================');
-const firstNumber = 10;
-const secondNumber = 5;
+function calculatorUsage() {
+  console.log('Welcome to the calculator');
+  console.log('===========================');
+  const firstNumber = 10;
+  const secondNumber = 5;
+  
+  console.log('Client A: I want to add two numbers');
+  const calculator = new CalculatorContext(new AdditionStrategy());
+  console.log('Result: ', calculator.executeStrategy(firstNumber, secondNumber));
+  console.log('');
+  console.log('Client B: I want to multiply two numbers');
+  calculator.setStrategy(new MultiplicationStrategy());
+  console.log('Result: ', calculator.executeStrategy(firstNumber, secondNumber));
+}
 
-console.log('Client A: I want to add two numbers');
-const calculator = new CalculatorContext(new AdditionStrategy());
-console.log('Result: ', calculator.executeStrategy(firstNumber, secondNumber));
-console.log('');
-console.log('Client B: I want to multiply two numbers');
-calculator.setStrategy(new MultiplicationStrategy());
-console.log('Result: ', calculator.executeStrategy(firstNumber, secondNumber));
+calculatorUsage();
